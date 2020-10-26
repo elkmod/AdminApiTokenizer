@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="AdminApiTokenizer\Core\Framework\Api\Response\JsonApiTokenizedType" decorates="Shopware\Core\Framework\Api\Response\Type\Api\JsonApiType">
+            <argument type="service" id="Shopware\Core\Framework\Api\Serializer\JsonApiEncoder"/>
+            <argument type="service" id="Shopware\Core\System\SalesChannel\Api\StructEncoder"/>
+            <argument type="tagged" tag="shopware.api.tokenizer"/>
+        </service>
+
+        <service id="AdminApiTokenizer\Tokenizer\Pipelines\Order\OrderTokenizer">
+            <tag name="shopware.api.tokenizer"/>
+        </service>
+
+        <service id="AdminApiTokenizer\Tokenizer\Pipelines\Customer\CustomerTokenizer">
+            <tag name="shopware.api.tokenizer"/>
+        </service>
+
+
+    </services>
+</container>
