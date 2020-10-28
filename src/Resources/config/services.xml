@@ -13,13 +13,19 @@
         </service>
 
         <service id="AdminApiTokenizer\Tokenizer\Pipelines\Order\OrderTokenizer">
+            <argument type="service" id="AdminApiTokenizer\Tokenizer\Pipelines\Customer\AddressTokenizer"/>
+            <argument type="service" id="AdminApiTokenizer\Tokenizer\Pipelines\Customer\CustomerTokenizer"/>
             <tag name="shopware.api.tokenizer"/>
         </service>
 
         <service id="AdminApiTokenizer\Tokenizer\Pipelines\Customer\CustomerTokenizer">
+            <argument type="service" id="AdminApiTokenizer\Tokenizer\Pipelines\Customer\AddressTokenizer"/>
             <tag name="shopware.api.tokenizer"/>
         </service>
 
+        <service id="AdminApiTokenizer\Tokenizer\Pipelines\Customer\AddressTokenizer">
+            <tag name="shopware.api.tokenizer"/>
+        </service>
 
     </services>
 </container>

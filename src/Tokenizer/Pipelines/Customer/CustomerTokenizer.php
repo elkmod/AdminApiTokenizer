@@ -5,11 +5,22 @@ namespace AdminApiTokenizer\Tokenizer\Pipelines\Customer;
 use AdminApiTokenizer\Tokenizer\Pipelines\TokenizerInterface;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressCollection;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 
 class CustomerTokenizer implements TokenizerInterface
 {
     const ENTITY = 'customer';
+
+    /**
+     * @var AddressTokenizer
+     */
+    private $addressTokenizer;
+
+    public function __construct(AddressTokenizer $addressTokenizer)
+    {
+        $this->addressTokenizer = $addressTokenizer;
+    }
 
     public function supports(string $apiAlias): bool
     {
@@ -18,17 +29,16 @@ class CustomerTokenizer implements TokenizerInterface
 
     public function protect(Entity $customer): Entity
     {
-        $customer->setFirstName(' ');
-        $customer->setLastName('(name protected)');
+        /** @var $customer CustomerEntity */
+        $customer->setLastName(' ');
         $customer->setEmail('(protected)');
 
-        $customer->setAddresses(new CustomerAddressCollection($customer->getAddresses()->map(function(CustomerAddressEntity $address) {
-            $address->setStreet('(protected)');
-            $address->setFirstName(' ');
-            $address->setLastName(' ');
+        if($customer->getAddresses() !== null) {
 
-            return $address;
-        })));
+            $customer->setAddresses(new CustomerAddressCollection($customer->getAddresses()->map(function(CustomerAddressEntity $address) {
+                return $this->addressTokenizer->protect($address);
+            })));
+        }
 
         return $customer;
     }
